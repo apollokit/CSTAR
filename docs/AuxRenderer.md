@@ -78,4 +78,4 @@ Important things to note:
 
 [Canvas API on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API)
 
-[Canvas Tutorial on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial)`
+[Canvas Tutorial on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial)

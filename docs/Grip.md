@@ -86,7 +86,8 @@ Some things to note:
 
  - Shots should not overlap
  - Shots can be defined in any order
- - seting `options.clockMultiplier` to zero will stop the simulation, and you will need to manually restart it (grip operates on the cesium internal clock)
+ - Setting `options.clockMultiplier` to zero will stop the simulation, and you will need to manually restart it (grip operates on the cesium internal clock)
+ - If the `options` object/a key from that object is omitted, the setting(s) will be preserved from the default/the last shot
 
 ### Creating captures
 
