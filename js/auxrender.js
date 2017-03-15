@@ -119,10 +119,10 @@ class AuxRenderer {
 			for (let id of Object.keys(this.description.renderMapping)) {
 				// prep for calling renderer(s) by figuring out the entity info
 				let ent = this.resolveEntity(id);
-				if (!ent.isAvailable(viewer.clock.currentTime)) {
-					// skip renderers if unavailable
-					continue;
-				}
+				if (ent == null || !ent.isAvailable(viewer.clock.currentTime)) {
+                    // skip renderers if unavailable
+                    continue;
+                }
 				let pos = ent.position.getValue(viewer.clock.currentTime);
 				let visible = this.isPositionVisible(pos);
 
@@ -132,7 +132,7 @@ class AuxRenderer {
 				// run all the renderers
 				for (let c in this.description.renderMapping[id]) {
 					let renderer = this.description.renderMapping[id][c];
-					
+
 					// check if we still need to load the renderer
 					if (typeof(renderer) == 'string') {
 						if (AuxRenderers[renderer] !== undefined) {
