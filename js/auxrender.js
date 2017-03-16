@@ -166,22 +166,30 @@ class AuxRenderer {
 	}
 
 	/**
+	 * Distance between positions
+	 * @param pos1 position 1
+	 * @param pos2 position 2
+	 * @return distance
+	 */
+	getDistanceBetweenPoints(pos1, pos2) {
+		var pos = Cesium.Cartesian3.clone(pos2);
+		Cesium.Cartesian3.subtract(pos, pos1, pos);
+
+		return Math.sqrt( Math.pow(pos.x, 2) + Math.pow(pos.y, 2) + Math.pow(pos.z, 2));
+	}
+
+	/**
 	 * Raycast and find if a position is occluded by the globe
 	 * @param position position of entity
 	 * @return bool true if visible
 	 */
 	isPositionVisible(position) {
-		// compute the direction vector from the difference of the camera position
-		// and the provided entity position by subtracting then normalizing
-		var direction  = Cesium.Cartesian3.clone(viewer.camera.position);
-		Cesium.Cartesian3.subtract(direction, position, direction);
-		Cesium.Cartesian3.normalize(direction, direction);
-
-		// create the new ray
-		var ray = new Cesium.Ray(position, direction);
-
-		// if the raycast is undefined the entity is not occluded
-		return viewer.scene.globe.pick(ray, viewer.scene) === undefined;
+		// center of the globe
+		var globeCenter = new Cesium.Cartesian3(0,-6371,0);
+		
+		// if the center of the globe is closer to the camera than the position of the entity
+		// then we're assuming that it's behind the globe
+		return (this.getDistanceBetweenPoints(globeCenter, viewer.camera.position) > this.getDistanceBetweenPoints(position, viewer.camera.position));
 	}
 
 }
