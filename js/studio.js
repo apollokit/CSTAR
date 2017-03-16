@@ -189,7 +189,7 @@ class Grip {
 		var style = document.createElement('style');
 		
 		// one lining here - it's a simple style
-		style.innerHTML = '#cesiumContainer.grip-uihidden >.cesium-viewer > div:not(.cesium-viewer-cesiumWidgetContainer) {opacity: 0; pointer-events: none;}';
+		style.innerHTML = '#cesiumContainer.grip-uihidden >.cesium-viewer > div:not(.cesium-viewer-cesiumWidgetContainer) {opacity: 0; pointer-events: none;}' + '#cesiumContainer.grip-uihidden {cursor: none;}';
 
 		document.body.appendChild(style);
 	}
