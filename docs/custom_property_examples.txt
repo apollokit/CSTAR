@@ -1,0 +1,75 @@
+in runner.html:
+
+
+var viewer = new Cesium.Viewer('cesiumContainer');
+
+        // got this from https://groups.google.com/forum/#!searchin/cesium-dev/custom$20czml$20properties|sort:relevance/cesium-dev/Y7TYqLBKVTw/d8M60oAIaisJ
+        function processDataVol1(entity, packet, entityCollection, sourceUri) {
+          var customPropertyData = packet.datavol1;
+
+          var customProperty = entity.datavol1;
+          if (customProperty === undefined) {
+            entity.addProperty('datavol1');
+          }
+
+          // this is on line 104382 in Cesium.js
+          Cesium.CzmlDataSource.processPacketData(Number, entity, 'datavol1', customPropertyData, undefined, sourceUri);
+        }
+
+        Cesium.CzmlDataSource.updaters.push(processDataVol1);
+
+
+
+
+
+in czml file:
+
+Sampled Property (note: propert will be undefined after final time point):
+{
+    "id": "Satellite/CubeSat1",
+    "datavol1": {
+      "interpolationAlgorithm": "LINEAR",
+      "interpolationDegree": 1,
+      "epoch": "2017-03-15T11:00:00Z",
+      "number": [
+        0,5.0,
+        500, 35.0,
+        1000, 50.0
+        ]
+    }
+  },
+
+
+
+
+Intervals:
+
+{
+    "id": "Satellite/CubeSat1",
+    "datavol1": [
+    {
+        "interval": "2017-03-15T11:00:00Z/2017-03-15T11:20:00Z", "number": 5.0
+      },
+      {
+        "interval": "2017-03-15T11:20:00Z/2017-03-15T11:40:00Z", "number": 15.0
+      },
+      {
+        "interval": "2017-03-15T11:40:00Z/2017-03-16T10:00:00Z", "number": 130.0
+      }
+      ]
+  },
+  {
+    "id": "Satellite/CubeSat2",
+    "datavol1": [
+    {
+        "interval": "2017-03-15T11:00:00Z/2017-03-15T11:20:00Z", "number": 20.0
+      },
+      {
+        "interval": "2017-03-15T11:20:00Z/2017-03-15T11:40:00Z", "number": 50.0
+      },
+      {
+        "interval": "2017-03-15T11:40:00Z/2017-03-16T10:00:00Z", "number": 10.0
+      }
+      ]
+  },
+
