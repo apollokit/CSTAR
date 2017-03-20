@@ -23,7 +23,17 @@ class Grip {
 
 		// add keyboard event listener
 		document.addEventListener('keyup', e => {
-			if (e.keyCode == 67) this.displayCapture();
+			if (e.keyCode == 67) {
+				this.capture();
+				if (e.shiftKey) {
+					this.copyCaptureToClipboard();
+					this.displayModal('saved capture to clipboard');
+				} else {
+					this.displayLatestCapture();
+				}
+			}
+
+			if (e.keyCode == 191) this.toggleAttachment(); 
 		})
 
 		// inject the ui hiding style
@@ -59,8 +69,13 @@ class Grip {
 	}
 
 	// take a camera capture (bound to keypress)
-	displayCapture() {
-		this.displayModal('<code>' + JSON.stringify(this.capture()) + '</code>');
+	displayLatestCapture() {
+		this.displayModal('<code>' + JSON.stringify(this.latestCapture) + '</code>');
+	}
+
+	// save a capture
+	takeCapture() {
+		this.latestCapture = this.capture();
 	}
 
 	attach() {
@@ -75,8 +90,37 @@ class Grip {
 		this.shouldAnimate = false;
 	}
 
+	toggleAttachment() {
+		this.displayModal((this.shouldAnimate) ? "detaching grip..." : "attaching grip...");
+		this.shouldAnimate = !this.shouldAnimate;
+		this.tick();
+	}
+
 	getActiveShot() {
 		return this.storyboard.findIntervalContainingDate(viewer.clock.currentTime);
+	}
+
+	// HAX HAX HAX
+	copyCaptureToClipboard() {
+		var tmpel = document.createElement('div');
+		tmpel.innerHTML = JSON.stringify(this.latestCapture);
+
+		// style the temp element
+		tmpel.style.opacity = 0;
+		tmpel.style.pointerEvents = 'none';
+
+		document.body.appendChild(tmpel);
+		
+		var range = document.createRange();
+		range.selectNode(tmpel);
+		window.getSelection().addRange(range);
+
+		// magic
+		document.execCommand('copy');
+
+		tmpel.remove();
+
+		
 	}
 
 	tick(ev) {
@@ -118,7 +162,7 @@ class Grip {
 		var direction = Cesium.Cartesian3.clone(viewer.camera.direction);
 		var up = Cesium.Cartesian3.clone(viewer.camera.up);
 
-		return {
+		this.latestCapture = {
 			position: {
 				x: position.x,
 				y: position.y,
@@ -131,6 +175,8 @@ class Grip {
 			},
 			timestamp: viewer.clock.currentTime.toString() // ISO 8601
 		}
+
+		return this.latestCapture;
 	}
 
 	// start: start value
