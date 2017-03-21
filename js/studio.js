@@ -118,9 +118,10 @@ class Grip {
 		// magic
 		document.execCommand('copy');
 
+		window.getSelection().removeAllRanges();
+
 		tmpel.remove();
 
-		
 	}
 
 	tick(ev) {
