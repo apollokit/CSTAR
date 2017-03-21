@@ -133,13 +133,12 @@ class Dolly {
 			// figure out unit vector
 			var vec = viewer.camera.direction.clone();
 
-			// cameraHeight
-			cameraHeight += 6371 * 1000;
-
 			Cesium.Cartesian3.negate(vec, vec);
-			Cesium.Cartesian3.multiplyByScalar(vec, cameraHeight, vec);
+			Cesium.Cartesian3.multiplyByScalar(vec, this.cameraHeight, vec);
 
 			viewer.camera.position = vec;
+		} else {
+			this.cameraHeight = cameraHeight + 6371 * 1000;
 		}
 
 		if (this.shouldAnimate) requestAnimationFrame(this.tick.bind(this));
