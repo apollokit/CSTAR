@@ -40,6 +40,9 @@ class Grip {
 			if (e.keyCode == 49) this.takeFirstCapture();
 			if (e.keyCode == 50) this.takeSecondCapture();
 			if (e.keyCode == 51) this.exportShot(e.shiftKey);
+
+			if (e.keyCode == 52) this.startTicking();
+			if (e.keyCode == 53) this.stopTicking();
 		})
 
 		// inject the ui hiding style
@@ -323,5 +326,25 @@ class Grip {
 				}
 			}
 		}
+	}
+
+	startTicking() {
+		this.shouldTickShots = true;
+		this.tickedShots = [];
+		this.takeFirstCapture();
+
+		var takeTickedFrame = _ => {
+			this.takeSecondCapture();
+			this.tickedShots.push(this.latestShot);
+
+			if (this.shouldTickShots) setTimeout(takeTickedFrame, 250);
+		}
+		takeTickedFrame();
+	}
+
+	stopTicking() {
+		this.shouldTickShots = false;
+		this.copyToClipboard(JSON.stringify({shots: this.tickedShots}));
+		this.displayModal('copied ' + this.tickedShots.length + ' shots to clipboard.');
 	}
 }

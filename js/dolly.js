@@ -17,7 +17,8 @@ class Dolly {
 			lookRight: false,
 			lookDown: false,
 			twistLeft: false,
-			twistRight: false
+			twistRight: false,
+			shifted: false
 		}
 	}
 

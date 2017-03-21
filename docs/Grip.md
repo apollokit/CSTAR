@@ -123,6 +123,8 @@ key | effect
 `2` | take the second capture of a shot
 `3` | display the current shot
 `shift-3` | copy the current shot to clipboard
+`4` | start capturing every 250ms
+`5` | export captures from `4` to clipboard
 
 ### Supported easings
 
