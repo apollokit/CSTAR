@@ -336,6 +336,7 @@ class Grip {
 		var takeTickedFrame = _ => {
 			this.takeSecondCapture();
 			this.tickedShots.push(this.latestShot);
+			this.takeFirstCapture();
 
 			if (this.shouldTickShots) setTimeout(takeTickedFrame, 250);
 		}
