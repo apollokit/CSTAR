@@ -34,10 +34,16 @@ class Grip {
 			}
 
 			if (e.keyCode == 191) this.toggleAttachment(); 
+
+			if (e.keyCode == 32) this.togglePlayback();
 		})
 
 		// inject the ui hiding style
 		this.injectStyle();
+	}
+
+	togglePlayback() {
+		viewer.clock.shouldAnimate = !viewer.clock.shouldAnimate;
 	}
 
 	load(path) {
