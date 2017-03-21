@@ -120,14 +120,18 @@ class AuxRenderer {
 				// prep for calling renderer(s) by figuring out the entity info
 				let ent = this.resolveEntity(id);
 				if (ent == null || !ent.isAvailable(viewer.clock.currentTime)) {
-                    // skip renderers if unavailable
-                    continue;
-                }
+				    // skip renderers if unavailable
+				    continue;
+				}
+
 				let pos = ent.position.getValue(viewer.clock.currentTime);
 				let visible = this.isPositionVisible(pos);
 
 				// otherwise, transform the position to window coordinates
 				pos = Cesium.SceneTransforms.wgs84ToWindowCoordinates(viewer.scene, pos);
+
+				// if scene transforms failed then skip this renderer
+				if (pos === undefined) continue;
 
 				// run all the renderers
 				for (let c in this.description.renderMapping[id]) {
