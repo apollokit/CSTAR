@@ -305,5 +305,23 @@ class Grip {
 			}
 		}
 
+		// skip mapmode stuff if currently transitioning between modes
+		if ('mapMode' in opts && viewer.scene._mode != 0) {
+			var currentMapMode = ((viewer.scene._mode == 2) ? '2D' : '3D');
+
+			if (currentMapMode != opts.mapMode) {
+				var morphTime = 2;
+				// allow overriding morph time
+				if ('mapMode_morph' in opts) {
+					morphTime = opts.mapMode_morph;
+				}
+
+				if (opts.mapMode == '2D') {
+					viewer.scene.morphTo2D(morphTime);
+				} else {
+					viewer.scene.morphTo3D(morphTime);
+				}
+			}
+		}
 	}
 }
