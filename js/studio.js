@@ -26,7 +26,7 @@ class Grip {
 			if (e.keyCode == 67) {
 				this.capture();
 				if (e.shiftKey) {
-					this.copyCaptureToClipboard();
+					this.copyToClipboard(JSON.stringify(this.latestCapture));
 					this.displayModal('saved capture to clipboard');
 				} else {
 					this.displayLatestCapture();
@@ -36,6 +36,10 @@ class Grip {
 			if (e.keyCode == 191) this.toggleAttachment(); 
 
 			if (e.keyCode == 32) this.togglePlayback();
+
+			if (e.keyCode == 49) this.takeFirstCapture();
+			if (e.keyCode == 50) this.takeSecondCapture();
+			if (e.keyCode == 51) this.exportShot(e.shiftKey);
 		})
 
 		// inject the ui hiding style
@@ -107,9 +111,9 @@ class Grip {
 	}
 
 	// HAX HAX HAX
-	copyCaptureToClipboard() {
+	copyToClipboard(text) {
 		var tmpel = document.createElement('div');
-		tmpel.innerHTML = JSON.stringify(this.latestCapture);
+		tmpel.innerHTML = text;
 
 		// style the temp element
 		tmpel.style.opacity = 0;
@@ -130,6 +134,33 @@ class Grip {
 
 	}
 
+	// take first capture
+	takeFirstCapture() {
+		this.capture();
+		this.previousCapture = this.latestCapture;
+		this.displayModal('took first capture');
+	}
+
+	// take second capture & export maybe
+	takeSecondCapture() {
+		this.capture();
+		this.latestShot = {
+			start: this.previousCapture,
+			end: this.latestCapture
+		};
+		this.displayModal('took second capture');
+	}
+
+	// export shot
+	exportShot(copy) {
+		if (copy) {
+			this.copyToClipboard(JSON.stringify(this.latestShot));
+			this.displayModal('copied shot to clipboard');
+		} else {
+			this.displayModal(JSON.stringify(this.latestShot));
+		}
+	}
+
 	tick(ev) {
 		// find the active shot
 		var shot = this.getActiveShot();
@@ -141,6 +172,11 @@ class Grip {
 			// progress = (currentTime - shot.start) / (shot.stop - shot.start) 
 			var shotLength = Cesium.JulianDate.secondsDifference(shot.stop, shot.start);
 			var shotProgress = Cesium.JulianDate.secondsDifference(viewer.clock.currentTime, shot.start);
+
+			// if there isn't an easing assume linear
+			if (!("easing" in shot.data)) {
+				shot.data.easing = 'linear';
+			}
 
 			// calculate tweened position/orientation
 			var tweened = this.tweenShots(shot.data.start, shot.data.end, shotProgress / shotLength, easing[shot.data.easing]);

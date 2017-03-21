@@ -111,6 +111,19 @@ Press `c` to create a capture of the current timestamp. The capture will pop up,
 
 Easiest thing to do would be to copy/paste that into a storyboard file, under the `shot.start` or `shot.end` keys.
 
+### Keybindings
+
+key | effect
+--- | ------
+`spacebar` | toggle cesium viewer playback
+`C` | create capture and display
+`shift-C` | create capture and copy to clipboard
+`/` | attach/detach the grip from the camera
+`1` | take the first capture of a shot
+`2` | take the second capture of a shot
+`3` | display the current shot
+`shift-3` | copy the current shot to clipboard
+
 ### Supported easings
 
 ```
