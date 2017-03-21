@@ -18,7 +18,7 @@ class Dolly {
 			lookDown: false,
 			twistLeft: false,
 			twistRight: false,
-			shifted: false
+			graved: false
 		}
 	}
 
@@ -50,8 +50,8 @@ class Dolly {
 				return 'lookRight';
 			case 40:
 				return 'lookDown';
-			case 16:
-				return 'shifted';
+			case 192:
+				return 'graved';
 			default:
 				return undefined;
 		}
@@ -126,7 +126,7 @@ class Dolly {
 			viewer.camera.flyHome(0);
 		}
 
-		if (this.flags.shifted) {
+		if (this.flags.graved) {
 			// center of the earth
 			var earthCenter = new Cesium.Cartesian3(0, -6371, 0);
 
