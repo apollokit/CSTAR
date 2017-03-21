@@ -43,6 +43,7 @@ Key | Action
 `E` | Pedestal down
 `Q` | Pedestal up
 `H` | Reset view to home
+`shift` | Hold to maintain constant distance
 
 ## Further reading
 

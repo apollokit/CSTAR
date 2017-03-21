@@ -49,6 +49,8 @@ class Dolly {
 				return 'lookRight';
 			case 40:
 				return 'lookDown';
+			case 16:
+				return 'shifted';
 			default:
 				return undefined;
 		}
@@ -121,6 +123,22 @@ class Dolly {
 		}
 		if (this.flags.flyHome) {
 			viewer.camera.flyHome(0);
+		}
+
+		if (this.flags.shifted) {
+			// center of the earth
+			var earthCenter = new Cesium.Cartesian3(0, -6371, 0);
+
+			// figure out unit vector
+			var vec = viewer.camera.direction.clone();
+
+			// cameraHeight
+			cameraHeight += 6371 * 1000;
+
+			Cesium.Cartesian3.negate(vec, vec);
+			Cesium.Cartesian3.multiplyByScalar(vec, cameraHeight, vec);
+
+			viewer.camera.position = vec;
 		}
 
 		if (this.shouldAnimate) requestAnimationFrame(this.tick.bind(this));
