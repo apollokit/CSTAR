@@ -124,7 +124,16 @@ class AuxRenderer {
 				    continue;
 				}
 
-				let pos = ent.position.getValue(viewer.clock.currentTime);
+                let pos = undefined;
+
+                // if the Cesium-canonical "position" property is undefined, then a "position_proxy" may have been added instead
+                if (ent.position === undefined) {
+                    pos = ent.position_proxy.getValue(viewer.clock.currentTime);
+                }
+                else {
+				    pos = ent.position.getValue(viewer.clock.currentTime);
+                }
+
 				let visible = this.isPositionVisible(pos);
 
 				// otherwise, transform the position to window coordinates
@@ -190,7 +199,7 @@ class AuxRenderer {
 	isPositionVisible(position) {
 		// center of the globe
 		var globeCenter = new Cesium.Cartesian3(0,-6371,0);
-		
+
 		// if the center of the globe is closer to the camera than the position of the entity
 		// then we're assuming that it's behind the globe
 		return (this.getDistanceBetweenPoints(globeCenter, viewer.camera.position) > this.getDistanceBetweenPoints(position, viewer.camera.position));
