@@ -1,0 +1,92 @@
+Conic sensor
+
+{
+        "id":"Satellite/CubeSat1/Sensor/Sensor1",
+        "name":"Sensor1",
+        "parent":"Satellite/CubeSat1",
+        "availability": "2017-03-15T10:00:00Z/2017-03-16T10:00:00Z",
+        "agi_conicSensor":{
+          "show":true,
+          "showIntersection":true,
+          "intersectionColor":{
+            "rgba":[
+              0,255,0,255
+            ]
+          },
+          "intersectionWidth":2,
+          "portionToDisplay":"COMPLETE",
+          "lateralSurfaceMaterial":{
+            "solidColor":{
+              "color":{
+                "rgba":[
+                  0,255,0,51
+                ]
+              }
+            }
+          },
+          "innerHalfAngle": 0,
+          "outerHalfAngle": 0.348,
+          "minimumClockAngle": 0.0,
+          "maximumClockAngle": 6.283185307179586,   <-- NOTE: this is exactly equal to Cesium.Math.TWO_PI, which is necessary for getting rid of little max clock angle line
+          "radius":5e7
+        },
+        "position":{
+          "reference":"Satellite/CubeSat1#position"
+        },
+        "orientation":{
+            "reference": "Satellite/CubeSat1#orientation"
+        }
+    }
+
+
+
+
+Custom pattern
+
+{
+        "id":"Satellite/CubeSat1/Sensor/Sensor1",
+        "name":"Sensor1",
+        "parent":"Satellite/CubeSat1",
+        "availability": "2017-03-15T10:00:00Z/2017-03-16T10:00:00Z",
+        "agi_customPatternSensor":{
+          "show":true,
+          "showIntersection":true,
+          "intersectionColor":{
+            "rgba":[
+              0,255,0,255
+            ]
+          },
+          "intersectionWidth":2,
+          "portionToDisplay":"COMPLETE",
+          "lateralSurfaceMaterial":{
+            "solidColor":{
+              "color":{
+                "rgba":[
+                  0,255,0,51
+                ]
+              }
+            }
+          },
+          "domeSurfaceMaterial":{
+            "solidColor":{
+              "color":{
+                "rgba":[
+                  255,255,255,0
+                ]
+              }
+            }
+          },
+          "directions":{
+            "unitSpherical":[
+              0.7853981633974483,0.19619792218463297,2.356194490192345,0.19619792218463297,-2.356194490192345,0.19619792218463297,-0.7853981633974483,0.19619792218463297
+            ]
+          },
+          "radius":5e7
+        },
+        "position":{
+          "reference":"Satellite/CubeSat1#position"
+        },
+        "orientation":{
+            "reference": "Satellite/CubeSat1#orientation"
+        }
+    }
