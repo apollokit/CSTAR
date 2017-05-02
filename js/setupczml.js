@@ -187,63 +187,76 @@ function drawRefFrame(sat_pos,rotation) {
     return out1;
 }
 
+function getRotationInertialtoSat(sat,time) {
+    var sat_pos = sat.position.getValue(time);
+
+    now = Cesium.JulianDate.clone(time,new Cesium.JulianDate());
+
+    old_time = Cesium.JulianDate.addSeconds(now,-10,new Cesium.JulianDate());
+    var sat_pos_old = sat.position.getValue(old_time);
+
+    rough_vel = Cesium.Cartesian3.subtract(sat_pos,sat_pos_old,new Cesium.Cartesian3());
+    var vel_unit = Cesium.Cartesian3.normalize(rough_vel,new Cesium.Cartesian3());
+
+    return getSatNadirRotation(sat_pos,vel_unit);
+}
+
+function orientationCallback(time, result) {
+    // "result" is just an object that CAN contain the result if desired. Not using.
+    // "this" refers to the satellite object
+
+    // console.log('orientation for '+this.id.toString());
+
+    rotation_inertial_to_sat = getRotationInertialtoSat(this,time);
+
+    // rotate sat RF so that z axis is pointed toward nadir. All agi_* sensors are oriented along z axis. Note from cesium-sensor-volumes.js: "in it's coordinates, the sensor's principal direction is along the positive z-axis."
+    var yrotation = Cesium.Matrix3.fromRotationY(Math.PI/2, new Cesium.Matrix3());
+    var rotation_satxnadir_to_satznadir = Cesium.Matrix3.multiply( rotation_inertial_to_sat, yrotation, new Cesium.Matrix3())
+
+    return Cesium.Quaternion.fromRotationMatrix(rotation_satxnadir_to_satznadir, new Cesium.Quaternion()) ;
+}
+
+function drawNadirRFCallback() {
+    // "this" refers to the satellite object
+
+    var time = viewer.clock.currentTime;
+
+    rotation_inertial_to_sat = getRotationInertialtoSat(this,time);
+
+    var sat_pos = this.position.getValue(time);
+
+    var nadir_dir = drawRefFrame(sat_pos,rotation_inertial_to_sat);
+
+    return nadir_dir;
+}
+
+
 /**
      * Adds custom callback functions that specify the orientation value for the satellite - always returns nadir direction for now
      *
      */
-function addCallbacks(dataSource) {
-    var sat = dataSource.entities.getById('Satellite/CubeSat1');
-
-    // console.log(sat.name.toString())
-
+function addCallbacks(dataSource,viz_objects_json) {
     // Rules for callback properties:
     // second argument false means it's not constant
-    // "result" is just an object that CAN contain the result if desired. Not using.
 
+    // Add orientation callback
+    for (let sat_name of viz_objects_json.callbacks.orientation) {
+        var sat = dataSource.entities.getById(sat_name);
+        console.log('adding orientation callback to: '+sat.id.toString());
 
-    // Add orientation callback property
-    sat.orientation = new Cesium.CallbackProperty(function(time, result) {
-
-            var sat_pos = sat.position.getValue(time);
-
-            now = Cesium.JulianDate.clone(time,new Cesium.JulianDate());
-
-            old_time = Cesium.JulianDate.addSeconds(now,-10,new Cesium.JulianDate());
-            var sat_pos_old = sat.position.getValue(old_time);
-
-            rough_vel = Cesium.Cartesian3.subtract(sat_pos,sat_pos_old,new Cesium.Cartesian3());
-            var vel_unit = Cesium.Cartesian3.normalize(rough_vel,new Cesium.Cartesian3());
-
-            var rotation_inertial_to_sat = getSatNadirRotation(sat_pos,vel_unit);
-
-            // rotate sat RF so that z axis is pointed toward nadir. All agi_* sensors are oriented along z axis. Note from cesium-sensor-volumes.js: "in it's coordinates, the sensor's principal direction is along the positive z-axis."
-            var yrotation = Cesium.Matrix3.fromRotationY(Math.PI/2, new Cesium.Matrix3());
-            var rotation_satxnadir_to_satznadir = Cesium.Matrix3.multiply( rotation_inertial_to_sat, yrotation, new Cesium.Matrix3())
-
-            return Cesium.Quaternion.fromRotationMatrix(rotation_satxnadir_to_satznadir, new Cesium.Quaternion()) ;
-        }, false);
+        // Add orientation callback property
+        // Need to use bind to specify the object "sat" as the one to be used for "this" in orientationCallback
+        sat.orientation = new Cesium.CallbackProperty(orientationCallback.bind(sat), false);
+    }
 
 
     // Add nadir ref frame drawing callback property
-    sat.drawNadirRF = new Cesium.CallbackProperty(function() {
+    for (let sat_name of viz_objects_json.callbacks.drawNadirRF) {
+        var sat = dataSource.entities.getById(sat_name);
+        console.log('adding drawNadirRF callback to: '+sat.id.toString());
 
-            var time = viewer.clock.currentTime;
-            var sat_pos = sat.position.getValue(time);
-
-            now = Cesium.JulianDate.clone(time,new Cesium.JulianDate());
-
-            old_time = Cesium.JulianDate.addSeconds(now,-10,new Cesium.JulianDate());
-            var sat_pos_old = sat.position.getValue(old_time);
-
-            rough_vel = Cesium.Cartesian3.subtract(sat_pos,sat_pos_old,new Cesium.Cartesian3());
-            var vel_unit = Cesium.Cartesian3.normalize(rough_vel,new Cesium.Cartesian3());
-
-            var rotation_inertial_to_sat = getSatNadirRotation(sat_pos,vel_unit);
-
-            var nadir_dir = drawRefFrame(sat_pos,rotation_inertial_to_sat);
-
-            return nadir_dir;
-        }, false);
+        sat.drawNadirRF = new Cesium.CallbackProperty(drawNadirRFCallback.bind(sat), false);
+    }
 
     return dataSource;
 }
