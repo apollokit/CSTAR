@@ -192,10 +192,27 @@ function getRotationInertialtoSat(sat,time) {
 
     now = Cesium.JulianDate.clone(time,new Cesium.JulianDate());
 
+    // have to grab an old position, to diff the positions and get a velocity vector.
     old_time = Cesium.JulianDate.addSeconds(now,-10,new Cesium.JulianDate());
     var sat_pos_old = sat.position.getValue(old_time);
 
-    rough_vel = Cesium.Cartesian3.subtract(sat_pos,sat_pos_old,new Cesium.Cartesian3());
+    rough_vel = undefined;
+    if (sat_pos_old === undefined) {
+        console.log('setupczml.js: position at -10 sec doesnt exist! Going forward 10 sec instead');
+
+        // position doesn't exist at -10 seconds, likely because this is one of the very first data points in the scenario. We'll get around that for now by looking forward 10 sec instead
+        new_time = Cesium.JulianDate.addSeconds(now,10,new Cesium.JulianDate());
+        var sat_pos_new = sat.position.getValue(new_time);
+
+        if (sat_pos_old === undefined) {
+            console.log('setupczml.js: position at +10 sec doesnt exist either! Cant determine orientation');
+        }
+        rough_vel = Cesium.Cartesian3.subtract(sat_pos_new,sat_pos,new Cesium.Cartesian3());
+    }
+    else {
+        rough_vel = Cesium.Cartesian3.subtract(sat_pos,sat_pos_old,new Cesium.Cartesian3());
+    }
+
     var vel_unit = Cesium.Cartesian3.normalize(rough_vel,new Cesium.Cartesian3());
 
     return getSatNadirRotation(sat_pos,vel_unit);
