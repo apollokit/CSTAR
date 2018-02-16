@@ -186,7 +186,12 @@ class AuxRenderer {
 	 */
 	getDistanceBetweenPoints(pos1, pos2) {
 		var pos = Cesium.Cartesian3.clone(pos2);
-		Cesium.Cartesian3.subtract(pos, pos1, pos);
+		try  {
+			Cesium.Cartesian3.subtract(pos, pos1, pos);
+		}
+		catch (e)  {
+			console.log('auxrender.js,getDistanceBetweenPoints: error performing position subtraction, entity position Cartesian coordinates in czml might not be defined at this time point')
+		}
 
 		return Math.sqrt( Math.pow(pos.x, 2) + Math.pow(pos.y, 2) + Math.pow(pos.z, 2));
 	}
