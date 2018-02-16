@@ -271,6 +271,9 @@ function addCallbacks(dataSource,viz_objects_json) {
     for (let sat_name of viz_objects_json.callbacks.drawNadirRF) {
         var sat = dataSource.entities.getById(sat_name);
         console.log('adding drawNadirRF callback to: '+sat.id.toString());
+        console.log('to draw local reference frame for a sat:');
+        console.log('var b = ar.resolveEntity(\'Satellite/0\')');
+        console.log('b.drawNadirRF._callback()');
 
         sat.drawNadirRF = new Cesium.CallbackProperty(drawNadirRFCallback.bind(sat), false);
     }
