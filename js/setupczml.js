@@ -75,6 +75,20 @@ function pushCZMLProcessors() {
 
     Cesium.CzmlDataSource.updaters.push(processDataRate);
 
+    function processLinkInfo(entity, packet, entityCollection, sourceUri) {
+      var customPropertyData = packet.link_info;
+
+      var customProperty = entity.link_info;
+      if (customProperty === undefined) {
+        entity.addProperty('link_info');
+      }
+
+      // this is on line 104382 in Cesium.js
+      Cesium.CzmlDataSource.processPacketData( String, entity, 'link_info', customPropertyData, undefined, sourceUri, entityCollection);
+    }
+
+    Cesium.CzmlDataSource.updaters.push(processLinkInfo);
+
 
     // For processing proxy position - which can be used to add an arbitrary position value to any czml packet
     function processPositionProxy(entity, packet, entityCollection, sourceUri) {
