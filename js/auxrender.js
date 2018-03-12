@@ -126,13 +126,19 @@ class AuxRenderer {
 
                 let pos = undefined;
 
-                // if the Cesium-canonical "position" property is undefined, then a "position_proxy" may have been added instead
-                if (ent.position === undefined) {
-                    pos = ent.position_proxy.getValue(viewer.clock.currentTime);
-                }
-                else {
-				    pos = ent.position.getValue(viewer.clock.currentTime);
-                }
+                try  {
+					// if the Cesium-canonical "position" property is undefined, then a "position_proxy" may have been added instead
+	                if (ent.position === undefined) {
+	                    pos = ent.position_proxy.getValue(viewer.clock.currentTime);
+	                }
+	                else {
+					    pos = ent.position.getValue(viewer.clock.currentTime);
+	                }
+				}
+				catch (e)  {
+					console.log('auxrender.js,tick(): could not find position or position_proxy attribute for object id: '+id)
+				}
+                
 
 				let visible = this.isPositionVisible(pos);
 
