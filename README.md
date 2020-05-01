@@ -21,7 +21,7 @@ These extensions have been designed to be used as a [git submodule](https://chri
 Register a submodule in somewhere your repository:
 
 ```bash
-$ git submodule add git@github.mit.edu:star-lab/CSTAR.git path/to/submodule/mount/
+$ git submodule add git@github.com:apollokit/CSTAR.git path/to/submodule/mount/
 ```
 
 To set up your repo, continue to the next step:
